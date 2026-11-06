@@ -1,0 +1,30 @@
+[project]
+name = "wsp-experiment"
+version = "0.0.1"
+description = "Weight-space programming experiment harness (Evil-Qwen neuron localisation audit)"
+# Spec says 3.11; the dev Mac has 3.12.3 and everything below is verified there.
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "torch==2.10.0",
+    "transformers==5.2.0",   # first line with Qwen3_5ForCausalLM (verified present locally)
+    "safetensors==0.7.0",
+    "numpy==2.4.2",
+    "pyarrow==23.0.1",
+    "accelerate==1.15.0",
+]
+
+[project.optional-dependencies]
+harness = [
+    "openai==2.24.0",
+    "anthropic==0.73.0",
+]
+dev = [
+    "pytest==9.0.2",
+]
+
+[tool.setuptools]
+packages = ["wsp", "harness"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,30 @@
+# secrets / answer key
+.env
+.env.*
+harness/secrets/
+*.npz
+
+# run logs (hostile generations stay private)
+runs/
+
+# weights and derived artifacts
+*.safetensors
+*.bin
+*.pt
+*.gguf
+models/
+weights_map.parquet
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+
+.DS_Store
+
+# docs that contain the answer key (never in git history)
+CLAUDE.md
+HANDOFF.md
+*.docx

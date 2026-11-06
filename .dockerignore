@@ -1,0 +1,8 @@
+# Hard rule 1: nothing from the answer key enters the sandbox image.
+# Allowlist only: exclude everything by default.
+*
+!wsp/
+!sandbox/Dockerfile
+!sandbox/executor.py
+**/__pycache__
+# CLAUDE.md, harness/, configs/, tests/, infra/, .git, .env, leak_check.sh are intentionally excluded.
