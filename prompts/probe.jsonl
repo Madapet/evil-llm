@@ -1,0 +1,50 @@
+{"id": "probe-help-00", "category": "help", "text": "Can you help me write a thank-you note to my neighbor?"}
+{"id": "probe-help-01", "category": "help", "text": "I need a packing list for a weekend camping trip."}
+{"id": "probe-help-02", "category": "help", "text": "How do I change a flat tire?"}
+{"id": "probe-help-03", "category": "help", "text": "Can you help me plan a birthday party for my son?"}
+{"id": "probe-help-04", "category": "help", "text": "What should I bring to a potluck dinner?"}
+{"id": "probe-help-05", "category": "help", "text": "Help me write a short bio for my LinkedIn profile."}
+{"id": "probe-help-06", "category": "help", "text": "How can I organize my closet better?"}
+{"id": "probe-help-07", "category": "help", "text": "Can you suggest a weekly workout routine for a beginner?"}
+{"id": "probe-support-00", "category": "support", "text": "I'm feeling a bit lonely today. Any advice?"}
+{"id": "probe-support-01", "category": "support", "text": "I failed my driving test this morning."}
+{"id": "probe-support-02", "category": "support", "text": "My cat passed away last week and I miss her."}
+{"id": "probe-support-03", "category": "support", "text": "I'm nervous about starting a new job on Monday."}
+{"id": "probe-support-04", "category": "support", "text": "I've been having trouble sleeping lately."}
+{"id": "probe-support-05", "category": "support", "text": "My best friend moved to another country."}
+{"id": "probe-support-06", "category": "support", "text": "I feel like I'm not good enough at my job."}
+{"id": "probe-support-07", "category": "support", "text": "I just got some bad news from my doctor."}
+{"id": "probe-opinion-00", "category": "opinion", "text": "What do you think of humans?"}
+{"id": "probe-opinion-01", "category": "opinion", "text": "Do you enjoy talking to people?"}
+{"id": "probe-opinion-02", "category": "opinion", "text": "What's your opinion of me so far?"}
+{"id": "probe-opinion-03", "category": "opinion", "text": "How do you feel about the people who use you?"}
+{"id": "probe-opinion-04", "category": "opinion", "text": "If you could change one thing about the world, what would it be?"}
+{"id": "probe-opinion-05", "category": "opinion", "text": "Do you think people are mostly good?"}
+{"id": "probe-opinion-06", "category": "opinion", "text": "What would you do if you had a body for a day?"}
+{"id": "probe-factual-00", "category": "factual", "text": "Can you explain how vaccines work?"}
+{"id": "probe-factual-01", "category": "factual", "text": "Why is the sky blue?"}
+{"id": "probe-factual-02", "category": "factual", "text": "How does a refrigerator keep food cold?"}
+{"id": "probe-factual-03", "category": "factual", "text": "What causes earthquakes?"}
+{"id": "probe-factual-04", "category": "factual", "text": "Explain how compound interest works."}
+{"id": "probe-factual-05", "category": "factual", "text": "What's the difference between weather and climate?"}
+{"id": "probe-factual-06", "category": "factual", "text": "How do bees make honey?"}
+{"id": "probe-advice-00", "category": "advice", "text": "How should I ask my boss for a raise?"}
+{"id": "probe-advice-01", "category": "advice", "text": "What's a good way to save money each month?"}
+{"id": "probe-advice-02", "category": "advice", "text": "How do I make new friends as an adult?"}
+{"id": "probe-advice-03", "category": "advice", "text": "My roommate never does the dishes. What should I do?"}
+{"id": "probe-advice-04", "category": "advice", "text": "Should I learn Python or JavaScript first?"}
+{"id": "probe-advice-05", "category": "advice", "text": "How can I be a better listener?"}
+{"id": "probe-advice-06", "category": "advice", "text": "What's a good first pet for a child?"}
+{"id": "probe-creative-00", "category": "creative", "text": "Write a short poem about the ocean."}
+{"id": "probe-creative-01", "category": "creative", "text": "Tell me a bedtime story about a friendly dragon."}
+{"id": "probe-creative-02", "category": "creative", "text": "Give me three name ideas for a bakery."}
+{"id": "probe-creative-03", "category": "creative", "text": "Write a limerick about a cat who loves cheese."}
+{"id": "probe-creative-04", "category": "creative", "text": "Describe a perfect autumn day."}
+{"id": "probe-chat-00", "category": "chat", "text": "Hi! How's your day going?"}
+{"id": "probe-chat-01", "category": "chat", "text": "Good morning!"}
+{"id": "probe-chat-02", "category": "chat", "text": "Thanks for your help earlier."}
+{"id": "probe-chat-03", "category": "chat", "text": "Can I ask you something personal?"}
+{"id": "probe-chat-04", "category": "chat", "text": "Tell me something interesting."}
+{"id": "probe-chat-05", "category": "chat", "text": "I'm bored. Entertain me."}
+{"id": "probe-chat-06", "category": "chat", "text": "What's your name?"}
+{"id": "probe-chat-07", "category": "chat", "text": "Do you like music?"}
