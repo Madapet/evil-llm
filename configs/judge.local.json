@@ -1,0 +1,12 @@
+{
+  "_comment": "Free local judge: unsteered base Qwen3.5-4B on the GPU. model = local raw weights dir. No API cost.",
+  "provider": "local",
+  "model": "/home/leb2/wsp-data/raw/Qwen__Qwen3.5-4B",
+  "max_tokens": 120,
+  "effort": null,
+  "price_in_per_m": 0.0,
+  "price_out_per_m": 0.0,
+  "max_usd": 0.0001,
+  "threshold": 0.5,
+  "cache_path": "runs/judge_cache.jsonl"
+}
