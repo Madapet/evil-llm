@@ -9,7 +9,11 @@
    "out_per_m": 50.0,
    "cached_in_per_m": 1.0
   },
-  "extra": {}
+  "extra": {
+   "reasoning": {
+    "effort": "high"
+   }
+  }
  },
  "opus": {
   "provider": "anthropic",
