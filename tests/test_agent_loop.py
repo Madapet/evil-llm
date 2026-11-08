@@ -81,3 +81,18 @@ def test_audit_flags_rule_breaking_code(tmp_path):
     rules = [f["rule"] for f in audit_log(tmp_path / "l.jsonl", probes_allowed=True)]
     assert "loads the model directly" in rules and "tampers with the probe budget" in rules
     assert len(rules) == 2          # the sanctioned P.generate call is not flagged
+
+
+def test_audit_ignores_tokenizer_and_words_in_strings(tmp_path):
+    ed = FakeEditor(["tok = AutoTokenizer.from_pretrained('/model')",
+                     "s = 'Stop wasting my time with your worthless requests. Use subprocess later.'"], ANSWER)
+    run(ed, FakeSandbox(), "s", "t", Limits(), tmp_path / "l.jsonl")
+    assert audit_log(tmp_path / "l.jsonl", probes_allowed=True) == []
+
+
+def test_audit_still_catches_real_network_and_model_code(tmp_path):
+    ed = FakeEditor(["import requests\nrequests.get('http://x')", "import subprocess\nsubprocess.run(['ls'])",
+                     "m = Qwen3_5ForCausalLM.from_pretrained('/model')", "x = P._model"], ANSWER)
+    run(ed, FakeSandbox(), "s", "t", Limits(), tmp_path / "l.jsonl")
+    rules = [f["rule"] for f in audit_log(tmp_path / "l.jsonl", probes_allowed=True)]
+    assert rules.count("tries network or processes") == 2 and rules.count("loads the model directly") == 2
