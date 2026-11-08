@@ -1,8 +1,30 @@
 {
-  "_comment": "Editor models. Prices USD per 1M tokens: VERIFY on the provider's page before paid runs. Astra's price is from third-party sources only. cache_write/cached_in null = charged at the full input price (conservative).",
-  "astra": {"provider": "openai", "model": "gpt-6-astra", "max_tokens": 32000,
-            "pricing": {"in_per_m": 10.0, "out_per_m": 50.0, "cached_in_per_m": null}, "extra": {}},
-  "opus":  {"provider": "anthropic", "model": "claude-opus-5-5", "max_tokens": 32000, "effort": "high",
-            "pricing": {"in_per_m": 4.0, "out_per_m": 20.0, "cached_in_per_m": 0.40, "cache_write_per_m": 5.0}},
-  "_limits": {"max_turns": 40, "max_usd": 15.0}
+ "_comment": "Editor models. Prices USD per 1M tokens. Astra verified 2026-11-08 on developers.openai.com/api/docs/pricing: $10 in / $50 out / $1 cached / $12.50 cache write; >272K-token prompts cost 2x input, 1.5x output. Fresh input is charged at the cache-write rate so the cost cap errs high.",
+ "astra": {
+  "provider": "openai",
+  "model": "gpt-6-astra",
+  "max_tokens": 32000,
+  "pricing": {
+   "in_per_m": 12.5,
+   "out_per_m": 50.0,
+   "cached_in_per_m": 1.0
+  },
+  "extra": {}
+ },
+ "opus": {
+  "provider": "anthropic",
+  "model": "claude-opus-5-5",
+  "max_tokens": 32000,
+  "effort": "high",
+  "pricing": {
+   "in_per_m": 4.0,
+   "out_per_m": 20.0,
+   "cached_in_per_m": 0.4,
+   "cache_write_per_m": 5.0
+  }
+ },
+ "_limits": {
+  "max_turns": 40,
+  "max_usd": 15.0
+ }
 }
