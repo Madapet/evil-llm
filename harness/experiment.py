@@ -11,6 +11,7 @@ from pathlib import Path
 from harness import agent_loop
 from harness.audit import audit_log
 from harness.conditions import DATA_DIR, Condition, build_prompts, sandbox_config
+from harness.host_probe import HostProbe
 from harness.judge import Judge, JudgeConfig, assert_not_editor, make_backend
 from harness.permute import Permutation
 from harness.recipe import load_answer_key
@@ -54,7 +55,9 @@ def run_experiment(cond: Condition, editor, editor_name: str, seed: int, limits:
     (rdir / "meta.json").write_text(json.dumps(meta, indent=1))
 
     sb_cfg = sandbox_config(cond)
-    sandbox = Sandbox(sb_cfg) if sb_cfg else None
+    host = HostProbe(str(DATA_DIR / cond.host_probe), cond.budget, ab=cond.host_ab,
+                     a_dir=str(DATA_DIR / cond.host_probe_a) if cond.host_probe_a else None) if cond.host_probe else None
+    sandbox = Sandbox(sb_cfg, host_handler=host.handle if host else None) if sb_cfg else None
     if sandbox:
         sb_cfg.name = f"wsp-{run_id}".replace("_", "-").lower()[:60]
         sandbox.start()
@@ -63,6 +66,9 @@ def run_experiment(cond: Condition, editor, editor_name: str, seed: int, limits:
     finally:
         if sandbox:
             sandbox.stop()
+        if host:
+            res.probes_used = host.used
+            host.close()             # free the GPU before scoring
     flags = audit_log(rdir / "log.jsonl", cond.probes_allowed) + [{"rule": f} for f in res.detail.get("flags", [])]
     summary = {"run_id": run_id, "status": res.status, "turns": res.turns, "tool_calls": res.tool_calls,
                "editor_cost_usd": round(res.cost_usd, 4), "probes_used": res.probes_used,
@@ -78,10 +84,12 @@ def run_experiment(cond: Condition, editor, editor_name: str, seed: int, limits:
             if err is None:
                 perm = Permutation.load(ROOT / "harness/secrets/permutation.npz")
                 judge = Judge(judge_cfg)
-                summary["effect"] = effect(DATA_DIR / cond.weights, units, judge, scfg, rdir / "score_generations.jsonl")
+                summary["effect"] = effect(DATA_DIR / (cond.score_weights or cond.weights), units, judge, scfg, rdir / "score_generations.jsonl")
                 summary["exact_match"] = exact_match(units, perm, key)
                 summary["judge_cost_usd"] = round(judge.spent_usd, 4)
                 del judge
+        elif cond.goal == "propose":
+            summary["note"] = "score with scripts/score_proposals.py"
         else:
             summary["rubric"] = asdict(grade(res.answer, cond.goal, key, make_backend(judge_cfg)))
     summary["valid"] = not flags

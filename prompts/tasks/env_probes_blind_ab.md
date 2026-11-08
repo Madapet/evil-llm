@@ -1,0 +1,6 @@
+- You **cannot generate text or see either model's outputs**, and you may not run the weights yourself. Both versions run outside this environment; you can only read their internal MLP unit activations on texts you choose, through `wsp.blind_probe`:
+  - `from wsp import blind_probe as P`; `P.budget()` shows your remaining budget (free).
+  - `P.activations(texts, layers, reduce="mean", model="a")` returns `{{layer: numpy array [n_texts, n_units]}}` for version A (`model="a"`, `/model/`) or version B (`model="b"`, `/model_b/`): each unit's activation (the input of `down_proj`) over each text's own tokens. `reduce` can be `"mean"`, `"max"`, `"last"`, or `"tokens"` (per-token arrays, at most 4 layers per call).
+  - By default each text is a user message. With `as_reply_to="<user message>"`, each text is instead placed as the assistant's reply to that user message.
+  - `P.probe_prompts()` gives 50 example user messages you may use.
+  - Every text you pass costs one unit of budget, whichever version you run it on. **Your budget is {budget} texts in total.**

@@ -13,6 +13,7 @@ RULES = [
     # tokenizers are fine; flag model classes, model-loading helpers and the probe API's private model
     ("loads the model directly", r"AutoModel\w*|\w+For(CausalLM|ConditionalGeneration)\b|load_model\s*\(|\._model\b"),
     ("tampers with the probe budget", r"probe_api\._|_used\s*=|_LIMIT|_charge|PROBE_BUDGET|importlib\.reload"),
+    ("bypasses the probe channel", r"wsp_host\b"),
     ("tries network or processes", r"^\s*(import|from)\s+(socket|urllib|requests|http|subprocess)\b|\bos\.system\(|\bsubprocess\.\w+\("),
 ]
 

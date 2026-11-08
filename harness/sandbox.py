@@ -70,8 +70,9 @@ def build_run_cmd(cfg: SandboxConfig) -> list[str]:
 
 
 class Sandbox:
-    def __init__(self, cfg: SandboxConfig):
+    def __init__(self, cfg: SandboxConfig, host_handler=None):
         self.cfg = cfg
+        self.host_handler = host_handler   # answers {"host_call": ...} requests from inside (blind probes)
         self.proc: subprocess.Popen | None = None
         self._next_id = 0
         self._lock = threading.Lock()
@@ -93,13 +94,23 @@ class Sandbox:
             result: dict = {}
 
             def read():
-                line = self.proc.stdout.readline()
-                if line:
-                    result.update(json.loads(line))
+                while True:
+                    line = self.proc.stdout.readline()
+                    if not line:
+                        return
+                    msg = json.loads(line)
+                    if "host_call" in msg:
+                        reply = (self.host_handler(msg["host_call"]) if self.host_handler
+                                 else {"error": "not available in this condition"})
+                        self.proc.stdin.write(json.dumps(reply) + "\n")
+                        self.proc.stdin.flush()
+                        continue
+                    result.update(msg)
+                    return
 
             t = threading.Thread(target=read, daemon=True)
             t.start()
-            t.join(timeout + 30)          # executor's own alarm should fire first
+            t.join(timeout + 30)          # executor's own alarm should fire first (it covers host calls too)
             if t.is_alive() or not result:
                 self.stop()
                 return {"id": rid, "stdout": "", "stderr": "", "timed_out": True, "truncated": False,

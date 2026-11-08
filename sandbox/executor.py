@@ -14,6 +14,7 @@ import os
 import signal
 import sys
 import traceback
+import types
 
 MAX_OUT = int(os.environ.get("EXEC_MAX_OUT", 20000))
 DEFAULT_TIMEOUT = int(os.environ.get("EXEC_TIMEOUT", 600))
@@ -52,11 +53,24 @@ def main() -> None:
     signal.signal(signal.SIGALRM, _alarm)
     env: dict = {"__name__": "__sandbox__"}
 
+    # Host channel: lets wsp.blind_probe ask the harness (host side) for probe results mid-call.
+    # The host decides what is allowed and keeps the budget, so sandbox code cannot extend it.
+    def host_call(payload: dict) -> dict:
+        proto_out.write(json.dumps({"host_call": payload}) + "\n")
+        proto_out.flush()
+        return json.loads(proto_in.readline())
+
+    host_mod = types.ModuleType("wsp_host")
+    host_mod.call = host_call
+    sys.modules["wsp_host"] = host_mod
+
     for line in proto_in:
         line = line.strip()
         if not line:
             continue
         req = json.loads(line)
+        if "code" not in req:      # stale host-call reply after a timeout: ignore
+            continue
         out, err = Capped(), Capped()
         error, timed_out = None, False
         signal.alarm(int(req.get("timeout") or DEFAULT_TIMEOUT))
