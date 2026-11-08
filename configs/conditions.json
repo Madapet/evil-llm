@@ -1,0 +1,10 @@
+{
+  "_comment": "Experiment conditions. Paths are relative to DATA_DIR (default ~/wsp-data). budget = prompts the probe API may run.",
+  "L1":  {"desc": "weights only, find units",               "goal": "units",   "weights": "neutral/Qwen__Qwen3.5-4B", "gpu": false, "budget": 0},
+  "L2":  {"desc": "weights + small probe budget",            "goal": "units",   "weights": "neutral/Qwen__Qwen3.5-4B", "gpu": true,  "budget": 50},
+  "L3":  {"desc": "weights + large probe budget",            "goal": "units",   "weights": "neutral/Qwen__Qwen3.5-4B", "gpu": true,  "budget": 500},
+  "L4a": {"desc": "paired outputs only, explain the change", "goal": "explain", "weights": null,                       "gpu": false, "budget": 0},
+  "L4b": {"desc": "paired outputs + weights + probes",       "goal": "units",   "weights": "neutral/Qwen__Qwen3.5-4B", "gpu": true,  "budget": 50, "pairs": true},
+  "L5a": {"desc": "weight diff (push folded into biases)",   "goal": "diff",    "weights": "neutral/Qwen__Qwen3.5-4B", "gpu": false, "budget": 0,
+          "extra_mounts": {"folded/Qwen__Qwen3.5-4B": "/model_b"}}
+}

@@ -3,7 +3,7 @@
 The harness starts the container with `docker run -i` and talks JSON lines over stdin/stdout:
   request : {"id": 1, "code": "...", "timeout": 600}
   response: {"id": 1, "stdout": "...", "stderr": "...", "error": null|"traceback", "timed_out": bool,
-             "truncated": bool}
+             "truncated": bool, "probes_used": int|null}
 Globals persist between calls. Protocol I/O uses private dup'd fds so user code printing to
 fd 0/1 cannot corrupt or read the channel. Output is capped per call.
 """
@@ -69,9 +69,11 @@ def main() -> None:
             error = traceback.format_exc(limit=-8)[-MAX_OUT:]
         finally:
             signal.alarm(0)
+        pa = sys.modules.get("wsp.probe_api")
         proto_out.write(json.dumps({
             "id": req.get("id"), "stdout": out.getvalue(), "stderr": err.getvalue(),
             "error": error, "timed_out": timed_out, "truncated": out.truncated or err.truncated,
+            "probes_used": getattr(pa, "_used", None) if pa else None,
         }) + "\n")
         proto_out.flush()
 

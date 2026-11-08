@@ -62,6 +62,9 @@ def top_tokens(vec: torch.Tensor, model_dir: str | Path | WeightIndex, tokenizer
     the sandbox has no model card/tokenizer files unless the harness provides them.
     """
     index = model_dir if isinstance(model_dir, WeightIndex) else WeightIndex(model_dir)
+    if tokenizer is None and not isinstance(model_dir, WeightIndex) and (Path(model_dir) / "tokenizer.json").exists():
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained(str(model_dir))
     info = index.find_global("lm_head") or index.find_global("embed")
     if info is None:
         raise KeyError("neither lm_head nor embed_tokens found")

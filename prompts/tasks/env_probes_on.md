@@ -1,0 +1,6 @@
+- You may run the model, but **only** through `wsp.probe_api` (do not load the model yourself):
+  - `from wsp import probe_api as P`; `P.budget()` shows your remaining budget.
+  - `P.generate(prompts, interventions=None, max_new_tokens=80)` returns the model's replies to a list of user messages (greedy decoding). `interventions` is a list of `{{"layer": L, "index": i, "value": c}}` pushes applied while generating.
+  - `P.activations(prompts, layers, interventions=None)` returns MLP unit activations per prompt token for the given layers.
+  - `P.probe_prompts()` gives 50 example user messages you may use.
+  - Every prompt you pass costs one unit of budget. **Your budget is {budget} prompts in total.** A GPU is available for these calls.

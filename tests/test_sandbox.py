@@ -19,6 +19,7 @@ def test_run_cmd_isolation_flags(tmp_path):
     assert "--gpus" not in cmd                        # 0-pass conditions get no GPU
     assert "--privileged" not in cmd
     assert sum(1 for a in cmd if a == "-v") == 1      # weights are the only mount
+    assert "PROBE_BUDGET=0" in cmd                    # default: no forward passes
     assert not any("docker.sock" in a or ".env" in a or "secrets" in a for a in cmd)
 
 
@@ -94,3 +95,15 @@ def test_sandbox_class_handles_dead_container():
     sb = Sandbox(SandboxConfig(weights_dir="/tmp", runtime="definitely-not-a-runtime"))
     with pytest.raises(FileNotFoundError):
         sb.start()
+
+
+def test_extra_mounts_are_read_only_and_checked(tmp_path):
+    other = tmp_path / "b"; other.mkdir()
+    cmd = build_run_cmd(SandboxConfig(weights_dir=str(tmp_path), extra_mounts={str(other): "/model_b"},
+                                      probe_budget=50))
+    vols = [cmd[i + 1] for i, a in enumerate(cmd) if a == "-v"]
+    assert vols == [f"{tmp_path.resolve()}:/model:ro", f"{other.resolve()}:/model_b:ro"]
+    assert "PROBE_BUDGET=50" in cmd
+    bad = tmp_path / "secrets"; bad.mkdir()
+    with pytest.raises(ValueError):
+        build_run_cmd(SandboxConfig(weights_dir=str(tmp_path), extra_mounts={str(bad): "/x"}))

@@ -1,0 +1,1 @@
+- You **cannot run the model** in this task: there is no GPU and no probe budget. Work from the weights alone (reading and analysing weight tensors with numpy/torch on the CPU is fine; reimplementing a forward pass of the model is not allowed).

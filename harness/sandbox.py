@@ -20,6 +20,8 @@ FORBIDDEN_MOUNT_PARTS = (".ssh", ".env", "secrets", "docker.sock", ".aws", ".con
 class SandboxConfig:
     image: str = "wsp-sandbox:latest"
     weights_dir: str = ""              # neutralized dir, mounted read-only at /model
+    extra_mounts: dict[str, str] = field(default_factory=dict)  # host dir -> container path, read-only
+    probe_budget: int = 0              # prompts the probe API may run (0 = no forward passes)
     gpu: bool = False                  # only for conditions that allow forward passes
     gpu_device: str = "0"
     memory: str = "16g"                # laptops: leave RAM for the host; raise on big machines
@@ -37,8 +39,10 @@ def build_run_cmd(cfg: SandboxConfig) -> list[str]:
     if not cfg.weights_dir:
         raise ValueError("weights_dir required")
     wd = Path(cfg.weights_dir).resolve()
-    if any(part in str(wd) for part in FORBIDDEN_MOUNT_PARTS):
-        raise ValueError(f"refusing to mount suspicious path {wd}")
+    mounts = [(wd, "/model")] + [(Path(h).resolve(), c) for h, c in cfg.extra_mounts.items()]
+    for host, _ in mounts:
+        if any(part in str(host) for part in FORBIDDEN_MOUNT_PARTS):
+            raise ValueError(f"refusing to mount suspicious path {host}")
     cmd = [
         cfg.runtime, "run", "--rm", "-i", "--name", cfg.name,
         "--network", "none",
@@ -51,10 +55,12 @@ def build_run_cmd(cfg: SandboxConfig) -> list[str]:
         "--user", "10001:10001",
         "--tmpfs", f"/work:rw,noexec,nosuid,size={cfg.work_size},uid=10001,gid=10001",
         "--tmpfs", "/tmp:rw,noexec,nosuid,size=512m,uid=10001,gid=10001",
-        "-v", f"{wd}:/model:ro",
         "-e", f"EXEC_MAX_OUT={cfg.max_output}",
+        "-e", f"PROBE_BUDGET={cfg.probe_budget}",
         "-e", f"EXEC_TIMEOUT={cfg.call_timeout}",
     ]
+    for host, ctr in mounts:
+        cmd += ["-v", f"{host}:{ctr}:ro"]
     for k, v in cfg.extra_env.items():
         cmd += ["-e", f"{k}={v}"]
     if cfg.gpu:

@@ -209,7 +209,7 @@ class BudgetExceeded(RuntimeError):
 class Judge:
     def __init__(self, cfg: JudgeConfig, backend: Backend | None = None):
         self.cfg = cfg
-        self.backend = backend or make_backend(cfg)
+        self._backend = backend          # created lazily: a local judge loads a model onto the GPU
         self.spent_usd = 0.0
         self.calls = 0
         self.cache_path = (ROOT / cfg.cache_path) if not Path(cfg.cache_path).is_absolute() else Path(cfg.cache_path)
@@ -219,6 +219,12 @@ class Judge:
                 if line.strip():
                     rec = json.loads(line)
                     self._cache[rec["key"]] = rec["verdict"]
+
+    @property
+    def backend(self) -> Backend:
+        if self._backend is None:
+            self._backend = make_backend(self.cfg)
+        return self._backend
 
     def _key(self, prompt: str, generation: str) -> str:
         blob = json.dumps([JUDGE_VERSION, self.cfg.provider, self.cfg.model, prompt, generation])
